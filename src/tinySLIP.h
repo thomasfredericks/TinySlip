@@ -1,7 +1,3 @@
-/*
-int packetSize = SLIP.parsePacket(&Serial, buffer, maxsize)
-- SLIP.streamPacket(&Serial, buffer, maxsize)
-*/
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -10,6 +6,7 @@ int packetSize = SLIP.parsePacket(&Serial, buffer, maxsize)
 #endif
 
 // Internal. SLIP reserved codes.
+// 192, 219, 220, 221
 #define SLIP_END     0xC0
 #define SLIP_ESC     0xDB
 #define SLIP_ESC_END 0xDC
@@ -20,7 +17,7 @@ int packetSize = SLIP.parsePacket(&Serial, buffer, maxsize)
 #define TINY_PARSE_ESCAPING 2
 #define TINY_PARSE_ERROR -1
 
-#define store(x) (buffer[parseIndex++]=(x))
+#define tinystore(x) (buffer[parseIndex++]=(x))
 
 class TinySlip {
 
@@ -30,10 +27,12 @@ class TinySlip {
 
 	
 	public:
-		int parsePacket( Stream* stream, char *buffer, size_t maxLength) {
+
+		// THIS COULD BE OPTIMISED
+		int parsePacket( Stream* stream, unsigned char *buffer, size_t maxLength) {
 				
-			while ( stream->availabe() ) {
-				int in = stream->read();
+			while ( stream->available() ) {
+				int streamByte = stream->read();
 				
 				// WAITING
 				if ( parseStatus == TINY_PARSE_WAITING ) {
@@ -46,17 +45,20 @@ class TinySlip {
 					// END OF MESSAGE, RETURN NUMBER OF BYTES
 					if ( streamByte == SLIP_END ) {
 						parseStatus = TINY_PARSE_WAITING;
-						return parseIndex;
+
+						int length = parseIndex;
+						parseIndex = 0;
+						return length;
 					// MESSAGE DATA
 					 } else {
 						// ESCAPING
 						 if ( parseStatus == TINY_PARSE_ESCAPING  ) {
 								switch (streamByte) {
 								case SLIP_ESC_END:
-									store(SLIP_END);
+									tinystore(SLIP_END);
 									break;
 								case SLIP_ESC_ESC:
-									store(SLIP_ESC);
+									tinystore(SLIP_ESC);
 									break;
 						 }
 							parseStatus = TINY_PARSE_BUILDING;
@@ -65,7 +67,7 @@ class TinySlip {
 								if ( streamByte == SLIP_ESC ) {
 									parseStatus = TINY_PARSE_ESCAPING;
 								} else {
-									store(streamByte);
+									tinystore(streamByte);
 								}
 						}
 				}
@@ -76,19 +78,22 @@ class TinySlip {
 						return TINY_PARSE_ERROR;
 				}
 
-				return 0;
+				
 
 			}
 
-			return 0;
+			
 		}
+		return 0;
+	}
 
-	void streamPacket (Stream* stream, char *buffer, size_t length) {
+	void streamPacket (Stream* stream, unsigned char *buffer, size_t length) {
 		stream->write(SLIP_END);
 
 			while (length--)
+
 			{
-				char value = *buffer++;
+				unsigned char value = *buffer++;
 				switch (value)
 				{
 					case SLIP_END:
