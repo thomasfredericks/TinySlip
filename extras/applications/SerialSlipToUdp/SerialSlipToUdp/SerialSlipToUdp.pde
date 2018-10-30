@@ -1,3 +1,6 @@
+// CHECK https://github.com/thomasfredericks/OSC-logger
+
+
 import processing.serial.*;
 import controlP5.*;
 
@@ -6,10 +9,13 @@ ScrollableList serialDropDownList;
 ScrollableList baudDropDownList;
 Toggle openSerialToggle;
 
-Serial serial;
+Serial serial = null;
 
 String portName;
-int serialListIndex;
+String[] portList;
+int[] baudList = {9600, 57600, 115200};
+int baudRate = -1;
+
 
 void setup() {
   // clear();
@@ -33,9 +39,9 @@ void setup() {
     .setType(ControlP5.LIST)
     ;
   baudDropDownList.getCaptionLabel().set("SERIAL BAUD");
-  baudDropDownList.addItem("9600",0);
-  baudDropDownList.addItem("57600",1);
-  baudDropDownList.addItem("115200",2);
+  for ( int i=0; i < baudList.length; i++ ) {
+    baudDropDownList.addItem(baudList[i]+"", 0);
+  }
   //baudDropDownList.close();
 
   // create a toggle
@@ -43,7 +49,7 @@ void setup() {
     .setPosition(115, 60)
     .setSize(50, 20)
     ;
- openSerialToggle.getCaptionLabel().set("OPEN SERIAL");
+  openSerialToggle.getCaptionLabel().set("OPEN SERIAL");
 
 
   //portName = Serial.list()[0]; //0 as default
@@ -58,19 +64,26 @@ void draw() {
 
 void controlEvent(ControlEvent theEvent) { //when something in the list is selected
 
- if (theEvent.isGroup()) {
+  if (theEvent.isGroup()) {
     // check if the Event was triggered from a ControlGroup
     println("event from group : "+theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
-  } 
-  else if (theEvent.isController()) {
+  } else if (theEvent.isController()) {
     //println("event from controller : "+theEvent.getController().getValue()+" from "+theEvent.getController());
     String controllerName = theEvent.getController().getName();
     if ( controllerName == "serialddlist" ) {
-      println( theEvent.getController().getValue() );
+      int v = (int) theEvent.getController().getValue() ;
+      portName = portList[v];
+    } else if ( controllerName == "baudddlist" ) {
+      int v = (int) theEvent.getController().getValue() ;
+      baudRate = baudList[v];
+    } else if ( controllerName == "openserialtoggle" ) {
+      int v = (int) theEvent.getController().getValue() ;
+      if ( v > 0 ) openSerial();
+      else closeSerial();
     }
     //println(theEvent.getController().getName() == "openserialtoggle");
   }
-  
+
 
   /*
     serial.clear(); //delete the port
@@ -86,17 +99,47 @@ void controlEvent(ControlEvent theEvent) { //when something in the list is selec
 
 
 void populateSerialList() {
-  String[] serialPortList = Serial.list();
+  portList = Serial.list();
   serialDropDownList.clear();
+
+  for (int i=0; i<portList.length; i++) {
+    serialDropDownList.addItem(portList[i], i); //add the items in the list
+  }
+
   /*
-  for (int i=0; i<serialPortList.length; i++) {
-    serialDropDownList.addItem(serialPortList[i], i); //add the items in the list
-  }
-  */
    for (int i=0; i<10; i++) {
-    serialDropDownList.addItem("COM"+i, i); //add the items in the list
-  }
-  
+   serialDropDownList.addItem("COM"+i, i); //add the items in the list
+   }
+   */
   serialDropDownList.getCaptionLabel().set("SERIAL PORT"); //set PORT before anything is selected
   //serialDropDownList.close();
+}
+
+void openSerial() {
+
+  closeSerial();
+
+  if ( portName != null && baudRate > -1 ) {
+    try {
+     serial = new Serial(this, portName, baudRate); //Create a new connection
+    }
+    catch(Exception e) {
+      //println("Port busy or not available");
+      openSerialToggle.setValue(false);
+       serial = null;
+    }
+
+    
+  }
+
+  println(serial);
+}
+
+void closeSerial() {
+  if ( serial != null ) {
+    serial.clear(); //delete the port
+    serial.stop(); //stop the port
+    serial = null;
+  }
+   
 }
