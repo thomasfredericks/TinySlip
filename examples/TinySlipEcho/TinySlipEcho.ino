@@ -14,11 +14,12 @@ void setup() {
 }
 
 void loop() {
-  int packetLength = slip.parsePacket( &Serial, inputBuffer, BUFFER_MAX_SIZE);
+  
 
   // IF WE RECEIVED A PACKET
-  if ( packetLength > 0 ) {
+  while ( slip.parseStream( &Serial, inputBuffer, BUFFER_MAX_SIZE) ) {
 
+    int packetLength = slip.available();
 
     // FOR DEMONSTRATION PURPOSES,
     // COPY THE INPUT BUFFER TO THE OUTPUT BUFFER
@@ -28,8 +29,6 @@ void loop() {
     }
     slip.streamPacket(&Serial, outputBuffer, packetLength);
     
-
-
   }
 
 }
