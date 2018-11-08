@@ -23,13 +23,18 @@ class TinySlip {
 
  private:
 	int parseStatus = 0;
+	size_t length =0;
 	size_t parseIndex=0;
 
 	
 	public:
 
+		size_t available() {
+			return length;
+		}
+
 		// THIS COULD BE OPTIMISED
-		int parsePacket( Stream* stream, unsigned char *buffer, size_t maxLength) {
+		bool parseStream( Stream* stream, unsigned char *buffer, size_t maxLength) {
 				
 			while ( stream->available() ) {
 				int streamByte = stream->read();
@@ -39,6 +44,7 @@ class TinySlip {
 					// ONLY START PACKING ONCE WE GET A START/END MARKER
 					 if ( streamByte == SLIP_END ) {
 							parseStatus = TINY_PARSE_BUILDING;
+							length = parseIndex = 0;
 					 }
 				// BUILDING OR ESCAPING
 				} else {
@@ -46,9 +52,11 @@ class TinySlip {
 					if ( streamByte == SLIP_END ) {
 						parseStatus = TINY_PARSE_WAITING;
 
-						int length = parseIndex;
-						parseIndex = 0;
-						return length;
+						length = parseIndex;
+						
+
+						return length>0;
+
 					// MESSAGE DATA
 					 } else {
 						// ESCAPING
@@ -75,7 +83,6 @@ class TinySlip {
 				// ERROR
 				if ( parseIndex >= maxLength ) {
 						parseStatus = TINY_PARSE_WAITING;
-						return TINY_PARSE_ERROR;
 				}
 
 				
@@ -85,6 +92,7 @@ class TinySlip {
 			
 		}
 		return 0;
+		
 	}
 
 	void streamPacket (Stream* stream, unsigned char *buffer, size_t length) {

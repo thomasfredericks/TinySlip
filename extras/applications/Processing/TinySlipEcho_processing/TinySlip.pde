@@ -11,17 +11,21 @@ class TinySlip {
   final int TINY_PARSE_WAITING = 0;
   final int TINY_PARSE_BUILDING = 1;
   final int TINY_PARSE_ESCAPING = 2;
-  final int TINY_PARSE_ERROR = -1;
 
   private int parseStatus;
   private int parseIndex;
+  private int length;
 
   TinySlip() {
     parseStatus = TINY_PARSE_WAITING;
     parseIndex= 0;
   };
+  
+  public int available() {
+    return length;
+  }
 
-  public int parsePacket( Serial serial, int[] buffer) {
+  public boolean parseStream( Serial serial, int[] buffer) {
 
     int maxLength = buffer.length;
 
@@ -33,6 +37,7 @@ class TinySlip {
         // ONLY START PACKING ONCE WE GET A START/END MARKER
         if ( streamByte == SLIP_END ) {
           parseStatus = TINY_PARSE_BUILDING;
+          length = parseIndex = 0;
         }
         // BUILDING OR ESCAPING
       } else {
@@ -40,9 +45,9 @@ class TinySlip {
         if ( streamByte == SLIP_END ) {
           parseStatus = TINY_PARSE_WAITING;
 
-          int length = parseIndex;
-          parseIndex = 0;
-          return length;
+          length = parseIndex;
+          
+          return length>0;
           // MESSAGE DATA
         } else {
           // ESCAPING
@@ -69,11 +74,11 @@ class TinySlip {
         // ERROR
         if ( parseIndex >= maxLength ) {
           parseStatus = TINY_PARSE_WAITING;
-          return TINY_PARSE_ERROR;
+
         }
       }
     }
-    return 0;
+    return false;
   }
 
 

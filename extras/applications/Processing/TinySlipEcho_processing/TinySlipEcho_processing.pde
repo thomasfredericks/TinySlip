@@ -37,17 +37,21 @@ void setup() {
 
 void draw() {
   
-  int packetLength = 0;
   
-  while ( ( packetLength = slip.parsePacket( serial , inputBuffer) ) > 0 ) {
+ 
+
+}
+
+void serialEvent(Serial serial) { 
+   while ( slip.parseStream( serial , inputBuffer)   ) {
+    int packetLength = slip.available();
     println("Received a SLIP packet with the following contents @"+millis()+"ms:");
     for (int i =0; i < packetLength; i++) {
       print(inputBuffer[i]+" ");
     }
     println();
   }
-
-}
+} 
 
 void mousePressed() {
   

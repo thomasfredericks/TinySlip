@@ -13,7 +13,8 @@ TinySlip	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-parsePacket	KEYWORD2
+available	KEYWORD2
+parseStream	KEYWORD2
 streamPacket	KEYWORD2
 
 
