@@ -12,19 +12,16 @@
 #define SLIP_ESC_END 0xDC
 #define SLIP_ESC_ESC 0xDD
 
-#define TINY_PARSE_WAITING 0
-#define TINY_PARSE_BUILDING 1
-#define TINY_PARSE_ESCAPING 2
-#define TINY_PARSE_ERROR -1
 
-#define tinystore(x) (buffer[parseIndex++]=(x))
 
 class TinySlip {
 
  private:
-	int parseStatus = 0;
+	
 	size_t length =0;
 	size_t parseIndex=0;
+	bool error = false;
+	bool escaping =false;
 
 	
 	public:
@@ -34,8 +31,53 @@ class TinySlip {
 		}
 
 		// THIS COULD BE OPTIMISED
-		bool parseStream( Stream* stream, unsigned char *buffer, size_t maxLength) {
-				
+		bool parseStream( Stream* serial, unsigned char *buffer, size_t maxLength) {
+
+
+		    while ( serial->available()>0 ) {
+		      int streamByte = serial->read();
+
+		
+		      // END OF MESSAGE, RETURN NUMBER OF BYTES
+		      if ( streamByte == SLIP_END ) {
+
+		        length = parseIndex;
+		        parseIndex = 0;
+		        error = false;
+
+		        return length>0;
+		        // MESSAGE DATA
+		      } else if ( error == false ) {
+		        // ESCAPING
+		        if ( escaping ) {
+		          switch (streamByte) {
+		          case SLIP_ESC_END:
+		            buffer[parseIndex++]=SLIP_END; 
+		            break;
+		          case SLIP_ESC_ESC:
+		            buffer[parseIndex++]=(SLIP_ESC);
+		            break;
+		          }
+		          escaping = false;
+		        } else {
+		          // NON ESCAPING
+		          if ( streamByte == SLIP_ESC ) {
+		            escaping = true;
+		          } else {
+		            buffer[parseIndex++]=(streamByte);
+		          }
+		        }
+		        // ERROR
+		        if ( parseIndex >= maxLength ) {
+		        parseIndex =0;
+		          error = true;
+		        }
+		      }
+		    }
+
+    return false;
+
+				/*
 			while ( stream->available() ) {
 				int streamByte = stream->read();
 				
@@ -92,7 +134,7 @@ class TinySlip {
 			
 		}
 		return 0;
-		
+		*/
 	}
 
 	void streamPacket (Stream* stream, unsigned char *buffer, size_t length) {
