@@ -31,7 +31,7 @@ class TinySlip {
     while ( serial.available()>0 ) {
       int streamByte = serial.read();
 
-      print(streamByte+"/"+parseIndex+" ");
+      //print(streamByte+"/"+parseIndex+" ");
 
 
       // END OF MESSAGE, RETURN NUMBER OF BYTES
@@ -104,7 +104,7 @@ class TinySlip {
 
 
     stream.write(SLIP_END);
-    print(SLIP_END);
-    print(" ");
+    //print(SLIP_END);
+    //print(" ");
   }
 }
