@@ -22,20 +22,23 @@ class TinySlip {
 	size_t parseIndex=0;
 	bool error = false;
 	bool escaping =false;
+    Stream& stream;
+	unsigned char * buffer;
+	size_t bufferSize;
 
-	
 	public:
 
-		size_t available() {
-			return length;
-		}
+	TinySlip(Stream& stream, unsigned char *buffer, size_t bufferSize) {
+		this->stream = stream;
+		this->buffer = buffer;
+		this->bufferSize = bufferSize;
 
-		// THIS COULD BE OPTIMISED
-		bool parseStream( Stream* serial, unsigned char *buffer, size_t maxLength) {
+	}
 
-
-		    while ( serial->available()>0 ) {
-		      int streamByte = serial->read();
+	// THIS COULD BE OPTIMISED
+	size_t  parsePacket() {
+			 while ( stream.available()>0 ) {
+		      int streamByte = stream.read();
 
 		
 		      // END OF MESSAGE, RETURN NUMBER OF BYTES
@@ -45,7 +48,7 @@ class TinySlip {
 		        parseIndex = 0;
 		        error = false;
 
-		        return length>0;
+		        return length;
 		        // MESSAGE DATA
 		      } else if ( error == false ) {
 		        // ESCAPING
@@ -75,11 +78,11 @@ class TinySlip {
 		      }
 		    }
 
-    return false;
+    return 0;
 
 				/*
-			while ( stream->available() ) {
-				int streamByte = stream->read();
+			while ( stream.available() ) {
+				int streamByte = stream.read();
 				
 				// WAITING
 				if ( parseStatus == TINY_PARSE_WAITING ) {
@@ -135,31 +138,39 @@ class TinySlip {
 		}
 		return 0;
 		*/
-	}
+		}
 
-	void streamPacket (Stream* stream, unsigned char *buffer, size_t length) {
-		stream->write(SLIP_END);
-
-			while (length--)
-
-			{
-				unsigned char value = *buffer++;
-				switch (value)
+	void write(unsigned char  data) {
+		switch (value)
 				{
 					case SLIP_END:
-						stream->write(SLIP_ESC);
-						stream->write(SLIP_ESC_END);
+						stream.write(SLIP_ESC);
+						stream.write(SLIP_ESC_END);
 						break;
 					case SLIP_ESC:
-						stream->write(SLIP_ESC);
-						stream->write(SLIP_ESC_ESC);
+						stream.write(SLIP_ESC);
+						stream.write(SLIP_ESC_ESC);
 						break;
 					default:
-						stream->write(value);
+						stream.write(value);
 				}
+	}
+
+	void beginPacket() {
+		stream.write(SLIP_END);
+	}
+    
+    void endPacket() {
+    	stream.write(SLIP_END);
+    }
+
+
+	void write (unsigned char *outputBuffer, size_t outputBufferLength) {
+			while (outputBufferLength--) {
+				unsigned char value = *outputBuffer++;
+				write(value);
 			}
 
-		stream->write(SLIP_END);
 	}
 
 
