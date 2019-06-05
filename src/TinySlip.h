@@ -2,10 +2,10 @@
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
-#include "WProgram.h"
+#include "WProgram."
 #endif
 
-// Internal. SLIP reserved codes.
+// Internal-> SLIP reserved codes->
 // 192, 219, 220, 221
 #define SLIP_END     0xC0
 #define SLIP_ESC     0xDB
@@ -22,13 +22,13 @@ class TinySlip {
 	size_t parseIndex=0;
 	bool error = false;
 	bool escaping =false;
-    Stream& stream;
-	unsigned char * buffer;
+    Stream* stream;
+	unsigned char* buffer;
 	size_t bufferSize;
 
 	public:
 
-	TinySlip(Stream& stream, unsigned char *buffer, size_t bufferSize) {
+	TinySlip(Stream* stream) {
 		this->stream = stream;
 		this->buffer = buffer;
 		this->bufferSize = bufferSize;
@@ -36,9 +36,9 @@ class TinySlip {
 	}
 
 	// THIS COULD BE OPTIMISED
-	size_t  parsePacket() {
-			 while ( stream.available()>0 ) {
-		      int streamByte = stream.read();
+	size_t  parsePacket(unsigned char *buffer, size_t bufferSize) {
+			 while ( stream->available()>0 ) {
+		      int streamByte = stream->read();
 
 		
 		      // END OF MESSAGE, RETURN NUMBER OF BYTES
@@ -71,7 +71,7 @@ class TinySlip {
 		          }
 		        }
 		        // ERROR
-		        if ( parseIndex >= maxLength ) {
+		        if ( parseIndex >= bufferSize ) {
 		        parseIndex =0;
 		          error = true;
 		        }
@@ -81,8 +81,8 @@ class TinySlip {
     return 0;
 
 				/*
-			while ( stream.available() ) {
-				int streamByte = stream.read();
+			while ( stream->available() ) {
+				int streamByte = stream->read();
 				
 				// WAITING
 				if ( parseStatus == TINY_PARSE_WAITING ) {
@@ -140,28 +140,28 @@ class TinySlip {
 		*/
 		}
 
-	void write(unsigned char  data) {
+	void write(unsigned char  value) {
 		switch (value)
 				{
 					case SLIP_END:
-						stream.write(SLIP_ESC);
-						stream.write(SLIP_ESC_END);
+						stream->write(SLIP_ESC);
+						stream->write(SLIP_ESC_END);
 						break;
 					case SLIP_ESC:
-						stream.write(SLIP_ESC);
-						stream.write(SLIP_ESC_ESC);
+						stream->write(SLIP_ESC);
+						stream->write(SLIP_ESC_ESC);
 						break;
 					default:
-						stream.write(value);
+						stream->write(value);
 				}
 	}
 
 	void beginPacket() {
-		stream.write(SLIP_END);
+		stream->write(SLIP_END);
 	}
     
     void endPacket() {
-    	stream.write(SLIP_END);
+    	stream->write(SLIP_END);
     }
 
 

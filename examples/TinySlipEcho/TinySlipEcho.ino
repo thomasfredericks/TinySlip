@@ -1,34 +1,28 @@
 #include <TinySlip.h>
 
 #define BUFFER_MAX_SIZE 256
-unsigned char inputBuffer[BUFFER_MAX_SIZE];
+unsigned char parsedSlipBuffer[BUFFER_MAX_SIZE];
 
-#define BUFFER_MAX_SIZE 256
-unsigned char outputBuffer[BUFFER_MAX_SIZE];
 
-TinySlip slip;
+TinySlip slip( &Serial );
 
 void setup() {
   Serial.begin(57600);
-  
+
 }
 
 void loop() {
-  
+
+  int packetLength = slip.parsePacket(parsedSlipBuffer, BUFFER_MAX_SIZE);
 
   // IF WE RECEIVED A PACKET
-  while ( slip.parseStream( &Serial, inputBuffer, BUFFER_MAX_SIZE) ) {
+  if ( packetLength > 0 ) {
 
-    int packetLength = slip.available();
-
-    // FOR DEMONSTRATION PURPOSES,
-    // COPY THE INPUT BUFFER TO THE OUTPUT BUFFER
-    // AND THEN SEND IT BACK
-    for ( int i=0; i < packetLength; i++) {
-      outputBuffer[i] = inputBuffer[i];
-    }
-    slip.streamPacket(&Serial, outputBuffer, packetLength);
+    slip.beginPacket();
     
+    slip.write(parsedSlipBuffer , packetLength);
+
+    slip.endPacket();
   }
 
 }
