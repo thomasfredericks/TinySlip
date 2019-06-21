@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 78.0, 85.0, 1008.0, 751.0 ],
+		"rect" : [ 651.0, 141.0, 777.0, 751.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -44,7 +44,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 268.0, 414.0, 241.0, 20.0 ],
+					"patching_rect" : [ 73.0, 332.0, 241.0, 20.0 ],
 					"text" : "serial",
 					"textcolor" : [ 0.996078431372549, 0.996078431372549, 0.996078431372549, 1.0 ]
 				}
@@ -1065,7 +1065,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 223.0, 436.0, 238.0, 53.0 ],
+					"patching_rect" : [ 28.0, 354.0, 238.0, 53.0 ],
 					"varname" : "serial",
 					"viewvisibility" : 1
 				}
@@ -1077,7 +1077,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 548.0, 338.0, 229.0, 20.0 ],
+					"patching_rect" : [ 353.0, 256.0, 229.0, 20.0 ],
 					"text" : "packs a list to a slip stream"
 				}
 
@@ -1088,7 +1088,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 563.0, 580.0, 229.0, 20.0 ],
+					"patching_rect" : [ 368.0, 498.0, 229.0, 20.0 ],
 					"text" : "unpacks a slip stream to a list"
 				}
 
@@ -1099,7 +1099,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 478.0, 641.0, 81.0, 22.0 ],
+					"patching_rect" : [ 283.0, 559.0, 81.0, 22.0 ],
 					"text" : "print received"
 				}
 
@@ -1111,8 +1111,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 249.0, 254.0, 218.0, 22.0 ],
-					"text" : "133 187 40"
+					"patching_rect" : [ 54.0, 172.0, 152.0, 22.0 ],
+					"text" : "231 223 119"
 				}
 
 			}
@@ -1500,7 +1500,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 478.0, 577.0, 77.0, 22.0 ],
+					"patching_rect" : [ 283.0, 495.0, 77.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -1519,7 +1519,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 800.0, 269.0, 75.0, 22.0 ],
+					"patching_rect" : [ 605.0, 187.0, 75.0, 22.0 ],
 					"text" : "192 219 192"
 				}
 
@@ -1531,7 +1531,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 776.0, 236.0, 29.5, 22.0 ],
+					"patching_rect" : [ 581.0, 154.0, 29.5, 22.0 ],
 					"text" : "255"
 				}
 
@@ -1543,7 +1543,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 723.0, 221.0, 29.5, 22.0 ],
+					"patching_rect" : [ 528.0, 139.0, 29.5, 22.0 ],
 					"text" : "97"
 				}
 
@@ -1555,7 +1555,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 683.0, 190.0, 102.0, 22.0 ],
+					"patching_rect" : [ 488.0, 108.0, 102.0, 22.0 ],
 					"text" : "32 192 84 56 100"
 				}
 
@@ -1567,7 +1567,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 600.0, 188.0, 45.0, 22.0 ],
+					"patching_rect" : [ 405.0, 106.0, 45.0, 22.0 ],
 					"text" : "1 2 3 4"
 				}
 
@@ -1580,7 +1580,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 478.0, 172.0, 24.0, 24.0 ]
+					"patching_rect" : [ 283.0, 90.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -1741,7 +1741,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 478.0, 211.0, 80.0, 22.0 ],
+					"patching_rect" : [ 283.0, 129.0, 80.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -2162,7 +2162,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 478.0, 338.0, 63.0, 22.0 ],
+					"patching_rect" : [ 283.0, 256.0, 63.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -2256,10 +2256,10 @@
 			}
  ],
 		"parameters" : 		{
+			"obj-16::obj-65" : [ "live.button[1]", "live.button", 0 ],
 			"obj-16::obj-63" : [ "live.button", "live.button", 0 ],
 			"obj-16::obj-71" : [ "live.text[1]", "live.text[1]", 0 ],
 			"obj-16::obj-67" : [ "live.text", "live.text", 0 ],
-			"obj-16::obj-65" : [ "live.button[1]", "live.button", 0 ],
 			"parameterbanks" : 			{
 
 			}

@@ -1,7 +1,7 @@
 #include <TinySlip.h>
 
 #define BUFFER_MAX_SIZE 256
-unsigned char parsedSlipBuffer[BUFFER_MAX_SIZE];
+unsigned char  parsedSlipBuffer[BUFFER_MAX_SIZE];
 
 
 TinySlip slip( &Serial );
@@ -13,7 +13,7 @@ void setup() {
 
 void loop() {
 
-  int packetLength = slip.parsePacket(parsedSlipBuffer, BUFFER_MAX_SIZE);
+  size_t packetLength = slip.parsePacket(parsedSlipBuffer, BUFFER_MAX_SIZE);
 
   // IF WE RECEIVED A PACKET
   if ( packetLength > 0 ) {
